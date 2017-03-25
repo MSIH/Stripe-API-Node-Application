@@ -65,6 +65,21 @@ app.post('/customerdelete', (req, res) => {
         });
 });
 
+app.post('/customerlist', (req, res) => {
+    var ctx = req.webtaskContext;
+    var STRIPE_SECRET_KEY = ctx.secrets.stripeSecretKey;
+    stripe(STRIPE_SECRET_KEY).customers.list(
+        {
+            created: req.body.created,
+            ending_before: req.body.ending_before,
+            limit: req.body.limit,
+            starting_after: req.body.starting_after
+        },
+            (err, customer) => {
+            return res.json(customer);
+        });
+});
+
 //cards
 app.post('/cardcreate', (req, res) => {
     var ctx = req.webtaskContext;
