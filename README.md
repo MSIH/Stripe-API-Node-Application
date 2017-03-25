@@ -1,6 +1,8 @@
 # stripe-node-server
 Node Server to Process Stripe works with WebTask
 
+Look for contributors
+
 This implements the customer, charge, and subscrption methods for stripe api version 2017-02-14.
 
 To install in webtask use the following:
