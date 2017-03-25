@@ -5,10 +5,10 @@ import { fromExpress } from 'webtask-tools';
 import bodyParser from 'body-parser';
 import stripe from 'stripe';
 
-bodyParser.urlencoded();
-
 var app = express();
-app.use(bodyParser.urlencoded());
+app.use(bodyParser.urlencoded({
+  extended: true
+}));
 
 //customers
 app.post('/customercreate', (req, res) => {
@@ -65,7 +65,7 @@ app.post('/customerdelete', (req, res) => {
         });
 });
 
-app.post('/customerlist', (req, res) => {
+app.get('/customerlist', (req, res) => {
     var ctx = req.webtaskContext;
     var STRIPE_SECRET_KEY = ctx.secrets.stripeSecretKey;
     stripe(STRIPE_SECRET_KEY).customers.list(
