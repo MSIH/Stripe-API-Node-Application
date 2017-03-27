@@ -135,8 +135,8 @@ app.post('/carddelete', (req, res) => {
 app.post('/subscriptioncreate', (req, res) => {
     var ctx = req.webtaskContext;
     var STRIPE_SECRET_KEY = ctx.secrets.stripeSecretKey;
-    stripe(STRIPE_SECRET_KEY).customers.createSubscription({
-        customer: req.body.customer, //required
+    stripe(STRIPE_SECRET_KEY).customers.createSubscription(req.body.customer,{
+        //customer: req.body.customer, //required
         plan: req.body.plan,
 		application_fee_percent: req.body.application_fee_percent,
         coupon: req.body.coupon,
