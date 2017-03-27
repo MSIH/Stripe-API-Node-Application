@@ -6,9 +6,12 @@ import bodyParser from 'body-parser';
 import stripe from 'stripe';
 
 var app = express();
+
 app.use(bodyParser.urlencoded({
-  extended: true
+    extended: true
 }));
+
+app.use(bodyParser.json());
 
 //customers
 app.post('/customercreate', (req, res) => {
@@ -31,7 +34,7 @@ app.get('/customerretrieve', (req, res) => {
     var ctx = req.webtaskContext;
     var STRIPE_SECRET_KEY = ctx.secrets.stripeSecretKey;
     stripe(STRIPE_SECRET_KEY).customers.retrieve(
-        req.body.customerid,
+        req.query.customerid,
         (err, customer) => {
             return res.json(customer);
         });
@@ -68,14 +71,13 @@ app.post('/customerdelete', (req, res) => {
 app.get('/customerlist', (req, res) => {
     var ctx = req.webtaskContext;
     var STRIPE_SECRET_KEY = ctx.secrets.stripeSecretKey;
-    stripe(STRIPE_SECRET_KEY).customers.list(
-        {
-            created: req.body.created,
-            ending_before: req.body.ending_before,
-            limit: req.body.limit,
-            starting_after: req.body.starting_after
+    stripe(STRIPE_SECRET_KEY).customers.list({
+            created: req.query.created,
+            ending_before: req.query.ending_before,
+            limit: req.query.limit,
+            starting_after: req.query.starting_after
         },
-            (err, customer) => {
+        (err, customer) => {
             return res.json(customer);
         });
 });
@@ -85,8 +87,7 @@ app.post('/cardcreate', (req, res) => {
     var ctx = req.webtaskContext;
     var STRIPE_SECRET_KEY = ctx.secrets.stripeSecretKey;
     stripe(STRIPE_SECRET_KEY).customers.createSource(
-        req.body.customerid,
-        {
+        req.body.customerid, {
             source: req.body.stripeToken,
             metadata: req.body.metadata
         },
@@ -99,8 +100,8 @@ app.get('/cardretrieve', (req, res) => {
     var ctx = req.webtaskContext;
     var STRIPE_SECRET_KEY = ctx.secrets.stripeSecretKey;
     stripe(STRIPE_SECRET_KEY).customers.retrieveCard(
-        req.body.customerid,
-        req.body.cardid,
+        req.query.customerid,
+        req.query.cardid,
         (err, card) => {
             return res.json(card);
         });
@@ -111,8 +112,9 @@ app.post('/cardupdate', (req, res) => {
     var STRIPE_SECRET_KEY = ctx.secrets.stripeSecretKey;
     stripe(STRIPE_SECRET_KEY).customers.retrieveCard(
         req.body.customerid,
-        req.body.cardid,
-        { source: req.body.stripeToken },
+        req.body.cardid, {
+            source: req.body.stripeToken
+        },
         (err, card) => {
             return res.json(card);
         });
@@ -133,9 +135,10 @@ app.post('/carddelete', (req, res) => {
 app.post('/subscriptioncreate', (req, res) => {
     var ctx = req.webtaskContext;
     var STRIPE_SECRET_KEY = ctx.secrets.stripeSecretKey;
-    stripe(STRIPE_SECRET_KEY).subscriptions.create({
-        source: req.body.stripeToken,
-        application_fee_percent: req.body.application_fee_percent,
+    stripe(STRIPE_SECRET_KEY).customers.createSubscription({
+        customer: req.body.customer, //required
+        plan: req.body.plan,
+		application_fee_percent: req.body.application_fee_percent,
         coupon: req.body.coupon,
         items: req.body.items,
         metadata: req.body.metadata,
@@ -144,7 +147,7 @@ app.post('/subscriptioncreate', (req, res) => {
         quantity: req.body.quantity,
         source: req.body.source,
         trial_end: req.body.trial_end,
-        trial_period_days: req.body.trial_period_days
+        trial_period_days: req.body.trial_period_days 
     }, (err, subscription) => {
         return res.json(subscription);
     });
@@ -154,7 +157,7 @@ app.get('/subscriptionretrieve', (req, res) => {
     var ctx = req.webtaskContext;
     var STRIPE_SECRET_KEY = ctx.secrets.stripeSecretKey;
     stripe(STRIPE_SECRET_KEY).subscriptions.retrieve(
-        req.body.subscriptionid,
+        req.query.subscriptionid,
         (err, subscription) => {
             return res.json(subscription);
         });
@@ -164,9 +167,7 @@ app.post('/subscriptionupdate', (req, res) => {
     var ctx = req.webtaskContext;
     var STRIPE_SECRET_KEY = ctx.secrets.stripeSecretKey;
     stripe(STRIPE_SECRET_KEY).subscriptions.update(
-        req.body.subscriptionid,
-        {
-            source: req.body.stripeToken,
+        req.body.subscriptionid, {
             application_fee_percent: req.body.application_fee_percent,
             coupon: req.body.coupon,
             items: req.body.items,
@@ -218,7 +219,7 @@ app.get('/chargeretrieve', (req, res) => {
     var ctx = req.webtaskContext;
     var STRIPE_SECRET_KEY = ctx.secrets.stripeSecretKey;
     stripe(STRIPE_SECRET_KEY).charges.retrieve(
-        req.body.chargeid,
+        req.query.chargeid,
         (err, charge) => {
             return res.json(charge);
         });
@@ -228,8 +229,7 @@ app.post('/chargeupdate', (req, res) => {
     var ctx = req.webtaskContext;
     var STRIPE_SECRET_KEY = ctx.secrets.stripeSecretKey;
     stripe(STRIPE_SECRET_KEY).charges.update(
-        req.body.chargeid,
-        {
+        req.body.chargeid, {
             amount: req.body.amount,
             currency: req.body.currency,
             application_fee: req.body.application_fee,
@@ -251,19 +251,18 @@ app.post('/chargeupdate', (req, res) => {
 app.get('/chargelist', (req, res) => {
     var ctx = req.webtaskContext;
     var STRIPE_SECRET_KEY = ctx.secrets.stripeSecretKey;
-    stripe(STRIPE_SECRET_KEY).charges.list(        
-        {
-            created: req.body.created,
-            customer: req.body.customer,
-            ending_before: req.body.ending_before,
-            limit : req.body.limit ,
-            source: req.body.stripeToken,
-            starting_after: req.body.starting_after,
-            transfer_group: req.body.transfer_group
+    stripe(STRIPE_SECRET_KEY).charges.list({
+            created: req.query.created,
+            customer: req.query.customer,
+            ending_before: req.query.ending_before,
+            limit: req.query.limit,
+            source: req.query.stripeToken,
+            starting_after: req.query.starting_after,
+            transfer_group: req.query.transfer_group
         },
-            (err, charge) => {
+        (err, charge) => {
             return res.json(charge);
         });
 });
 
-module.exports = fromExpress(app);  
+module.exports = fromExpress(app);
