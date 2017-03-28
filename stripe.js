@@ -13,10 +13,13 @@ app.use(bodyParser.urlencoded({
 
 app.use(bodyParser.json());
 
+const ctx = req.webtaskContext;
+const STRIPE_SECRET_KEY = ctx.secrets.stripeSecretKey;
+const stripe = stripePackage(STRIPE_SECRET_KEY);
+
 //customers
 app.post('/customercreate', (req, res) => {
-    var ctx = req.webtaskContext;
-    var STRIPE_SECRET_KEY = ctx.secrets.stripeSecretKey;
+ 
     stripe(STRIPE_SECRET_KEY).customers.create({
         source: req.body.stripeToken,
         business_vat_id: req.body.business_vat_id,
