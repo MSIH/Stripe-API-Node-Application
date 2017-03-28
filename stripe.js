@@ -1,17 +1,49 @@
 'use latest';
-
 import express from 'express';
 import { fromExpress } from 'webtask-tools';
 import bodyParser from 'body-parser';
 import stripe from 'stripe@4.14.0';
-
 var app = express();
-
 app.use(bodyParser.urlencoded({
     extended: true
 }));
-
 app.use(bodyParser.json());
+
+// m method
+// p path
+// r resource
+// f function
+// a arguments
+
+function httpRequest(data)
+{
+ 	app[data.m](data.p, (req, res) => {	 
+		var ctx = req.webtaskContext;
+		const STRIPE_SECRET_KEY = ctx.secrets.stripeSecretKey;
+		const stripe = stripePackage(STRIPE_SECRET_KEY);
+		 stripe[data.r][data.f](data.a(req), (err, result) => {
+		   if(err) return res.json(err);
+			 res.json(result);
+		});
+	});	
+}
+
+// post({});
+post("customers", "create",{
+  path: "/customers/create",
+  methodName: "customers",
+  actionName: "create",
+  argu: req => ({
+        source: req.body.stripeToken,
+        business_vat_id: req.body.business_vat_id,
+        coupon: req.body.coupon,
+        description: req.body.description,
+        email: req.body.email,
+        metadata: req.body.metadata,
+        shipping: req.body.shipping
+    })
+});
+
 
 //customers
 app.post('/customercreate', (req, res) => {
