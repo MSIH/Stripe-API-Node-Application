@@ -2,7 +2,8 @@
 import express from 'express';
 import {
     fromExpress
-} from 'webtask-tools';
+}
+from 'webtask-tools';
 import bodyParser from 'body-parser';
 import stripePackage from 'stripe@4.14.0';
 var app = express();
@@ -46,12 +47,12 @@ app.use(bodyParser.json());
 //Subscription items
 
 
-
-// m method
-// p path
-// r resource
-// f function
-// a arguments
+// function and keys reduce to save on space - webtask max 100kb
+// m http method
+// r stripe resource (ex customer or charge)
+// f stripe function (ex create or list)
+// a arguments (parameters)
+// s function to call stripe API
 
 function s(data) {
     app[data.m]("/" + data.r + "/" + data.f, (req, res) => {
@@ -116,7 +117,7 @@ s({
         starting_after: q.query.starting_after
     })
 });
-}
+
 
 //charge
 s({
@@ -247,6 +248,42 @@ s({
 });
 
 //Disputes
+s({
+    m: "get",
+    r: "disputes",
+    f: "retrieve",
+    a: q => (q.query.disputeid)
+});
+
+s({
+    m: "post",
+    r: "disputes",
+    f: "update",
+    a: q => (q.query.disputeid, {
+        evidence: q.body.evidence,
+        metadata: q.body.metadata
+    })
+});
+
+s({
+    m: "post",
+    r: "disputes",
+    f: "close",
+    a: q => (q.query.disputeid)
+});
+
+s({
+    m: "get",
+    r: "disputes",
+    f: "list",
+    a: q => ({
+        created: q.query.created,
+        ending_before: q.query.ending_before,
+        limit: q.query.limit,
+        starting_after: q.query.starting_after
+    })
+});
+
 //Events
 //File Uploads
 //Refunds
