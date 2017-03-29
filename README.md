@@ -1,5 +1,5 @@
 # Stripe API Node Application
-Node application to process [Stripe](https://stripe.com) [API](https://stripe.com/docs/api) also works with [WebTask](https://webtask.io/)
+Node application to process [Stripe API](https://stripe.com/docs/api), also works as a serverless application using [WebTask.io](https://webtask.io/)
 
 ### Looking for contributors
 
