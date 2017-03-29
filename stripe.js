@@ -16,7 +16,7 @@ app.use(bodyParser.json());
 //Balance - 20170328
 //Charge - 20170328
 //Customers - 20170328
-//Disputes
+//Disputes - 2070328
 //Events
 //File Uploads
 //Refunds
@@ -247,7 +247,7 @@ s({
     })
 });
 
-//Disputes
+//Disputes 20170328
 s({
     m: "get",
     r: "disputes",
