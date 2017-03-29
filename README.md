@@ -1,12 +1,45 @@
-# stripe-node-server
-Node Server to Process Stripe works with WebTask
+# Stripe API Node Application
+Node application to process [Stripe API](https://stripe.com/docs/api), also works as a serverless application using [WebTask.io](https://webtask.io/)
 
-Look for contributors
+### Looking for contributors
 
-This implements the customer, charge, and subscrption methods for stripe api version 2017-02-14.
+## To install in webtask use the following:
+1. npm install wt-cli -g
+2. wt init
+3. wt create filename.js --secret stripeSecretKey=StripeSecret (do not use quotes or brackets!)
 
-To install in webtask use the following:
+## Stripe API Resourse as of 20170328 (completed by and when)
+* Balance (MSIH 20170328)
+* Charge (MSIH 20170328)
+* Customers (MSIH 20170328)
+* Disputes
+* Events
+* File Uploads
+* Refunds
+* Tokens
+* Transfers
+* Transfer Reverals
+* Account
+* Application Fee Refunds
+* Application Fees
+* Receipts
+* Country Specs
+* External Accounts
+* Alipay
+* Bank
+* Cards (MSIH 20170328)
+* Sources
+* Orders
+* Order items
+* Returns
+* Products
+* SKUs
+* Coupons
+* Discounts
+* Invoices
+* Invoice items
+* Plans
+* Subscriptions (MSIH 20170328)
+* Subscription items
 
-npm install wt-cli -g
-wt init
-wt create filename.js --secret stripeSecretKey=[StripeSecret]
+mark down cheat sheet (https://guides.github.com/features/mastering-markdown/)
