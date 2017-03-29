@@ -4,7 +4,7 @@ import {
     fromExpress
 } from 'webtask-tools';
 import bodyParser from 'body-parser';
-import stripe from 'stripe@4.14.0';
+import stripePackage from 'stripe@4.14.0';
 var app = express();
 app.use(bodyParser.urlencoded({
     extended: true
@@ -188,7 +188,6 @@ s({
     f: "create",
     a: q => ({
         customer: q.body.customer, //required
-        plan: q.body.plan,
         application_fee_percent: q.body.application_fee_percent,
         coupon: q.body.coupon,
         items: q.body.items,
@@ -214,7 +213,6 @@ s({
     r: "subscriptions",
     f: "update",
     a: q => (q.body.subscriptionid, {
-        plan: q.body.plan,
         application_fee_percent: q.body.application_fee_percent,
         coupon: q.body.coupon,
         items: q.body.items,
