@@ -1,14 +1,14 @@
-#Stripe API Node Application
+# Stripe API Node Application
 Node application to process [Stripe](https://stripe.com) [API](https://stripe.com/docs/api) also works with [WebTask](https://webtask.io/)
 
-###Looking for contributors
+### Looking for contributors
 
-##To install in webtask use the following:
+## To install in webtask use the following:
 1. npm install wt-cli -g
 2. wt init
 3. wt create filename.js --secret stripeSecretKey=StripeSecret (do not use quotes or brackets!)
 
-##Stripe API Resourse as of 20170328 (completed by and when)
+## Stripe API Resourse as of 20170328 (completed by and when)
 * Balance (MSIH 20170328)
 * Charge (MSIH 20170328)
 * Customers (MSIH 20170328)
