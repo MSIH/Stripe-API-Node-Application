@@ -11,6 +11,7 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(bodyParser.json());
 
+// Resources as of 20170328
 //Balance
 //Charge - 20170328
 //Customers - 20170328
