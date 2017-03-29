@@ -1,269 +1,252 @@
 'use latest';
-
 import express from 'express';
-import { fromExpress } from 'webtask-tools';
+import {
+    fromExpress
+} from 'webtask-tools';
 import bodyParser from 'body-parser';
 import stripe from 'stripe@4.14.0';
-
 var app = express();
-
 app.use(bodyParser.urlencoded({
     extended: true
 }));
-
 app.use(bodyParser.json());
 
+// Resources as of 20170328
+//Balance
+//Charge - 20170328
+//Customers - 20170328
+//Disputes
+//Events
+//File Uploads
+//Refunds
+//Tokens
+//Transfers
+//Transfer Reverals
+//Account
+//Application Fee Refunds
+//Application Fees
+//Receipts
+//Country Specs
+//External Accounts
+//Alipay
+//Bank
+//Cards - 20170328
+//Sources
+//Orders
+//Order items
+//Returns
+//Products
+//SKUs
+//Coupons
+//Discounts
+//Invoices
+//Invoice items
+//Plans
+//Subscriptions - 20170328
+//Subscription items
+
+
+
+// m method
+// p path
+// r resource
+// f function
+// a arguments
+
+function s(data) {
+    app[data.m]("/" + data.r + "/" + data.f, (req, res) => {
+        var ctx = req.webtaskContext;
+        const STRIPE_SECRET_KEY = ctx.secrets.stripeSecretKey;
+        const stripe = stripePackage(STRIPE_SECRET_KEY);
+        stripe[data.r][data.f](data.a(req), (err, result) => {
+            if (err) return res.json(err);
+            res.json(result);
+        });
+    });
+}
+
 //customers
-app.post('/customercreate', (req, res) => {
-var ctx = req.webtaskContext;
-const STRIPE_SECRET_KEY = ctx.secrets.stripeSecretKey;
-const stripe = stripePackage(STRIPE_SECRET_KEY); 
-    stripe.customers.create({
-        source: req.body.stripeToken,
-        business_vat_id: req.body.business_vat_id,
-        coupon: req.body.coupon,
-        description: req.body.description,
-        email: req.body.email,
-        metadata: req.body.metadata,
-        shipping: req.body.shipping
-    }, (err, customer) => {
-        return res.json(customer);
-    });
+s({
+    m: "post",
+    r: "customers",
+    f: "create",
+    a: q => ({
+        source: q.body.stripeToken,
+        business_vat_id: q.body.business_vat_id,
+        coupon: q.body.coupon,
+        description: q.body.description,
+        email: q.body.email,
+        metadata: q.body.metadata,
+        shipping: q.body.shipping
+    })
 });
 
-app.get('/customerretrieve', (req, res) => {
-    var ctx = req.webtaskContext;
-    var STRIPE_SECRET_KEY = ctx.secrets.stripeSecretKey;
-    stripe(STRIPE_SECRET_KEY).customers.retrieve(
-        req.query.customerid,
-        (err, customer) => {
-            return res.json(customer);
-        });
+s({
+    m: "get",
+    r: "customers",
+    f: "retrieve",
+    a: q => (q.query.customerid)
 });
 
-app.post('/customerupdate', (req, res) => {
-    var ctx = req.webtaskContext;
-    var STRIPE_SECRET_KEY = ctx.secrets.stripeSecretKey;
-    // Updates the specified customer by setting the values of the parameters passed. Any parameters not provided will be left unchanged. 
-    // this logic need to be change. if value undefine then do not include
-    stripe(STRIPE_SECRET_KEY).customers.update(req.body.customerid, {
-        source: req.body.stripeToken,
-        business_vat_id: req.body.business_vat_id,
-        coupon: req.body.coupon,
-        description: req.body.description,
-        email: req.body.email,
-        metadata: req.body.metadata,
-        shipping: req.body.shipping
-    }, (err, customer) => {
-        return res.json(customer);
-    });
+s({
+    m: "post",
+    r: "customers",
+    f: "update",
+    a: q => (q.body.customerid, {
+        source: q.body.stripeToken,
+        business_vat_id: q.body.business_vat_id,
+        coupon: q.body.coupon,
+        description: q.body.description,
+        email: q.body.email,
+        metadata: q.body.metadata,
+        shipping: q.body.shipping
+    })
 });
 
-app.post('/customerdelete', (req, res) => {
-    var ctx = req.webtaskContext;
-    var STRIPE_SECRET_KEY = ctx.secrets.stripeSecretKey;
-    stripe(STRIPE_SECRET_KEY).customers.del(
-        req.body.customerid,
-        (err, customer) => {
-            return res.json(customer);
-        });
+s({
+    m: "post",
+    r: "customers",
+    f: "del",
+    a: q => (q.query.customerid)
 });
 
-app.get('/customerlist', (req, res) => {
-    var ctx = req.webtaskContext;
-    var STRIPE_SECRET_KEY = ctx.secrets.stripeSecretKey;
-    stripe(STRIPE_SECRET_KEY).customers.list({
-            created: req.query.created,
-            ending_before: req.query.ending_before,
-            limit: req.query.limit,
-            starting_after: req.query.starting_after
-        },
-        (err, customer) => {
-            return res.json(customer);
-        });
+s({
+    m: "get",
+    r: "customers",
+    f: "list",
+    a: q => ({
+        created: q.query.created,
+        ending_before: q.query.ending_before,
+        limit: q.query.limit,
+        starting_after: q.query.starting_after
+    })
 });
 
-//cards
-app.post('/cardcreate', (req, res) => {
-    var ctx = req.webtaskContext;
-    var STRIPE_SECRET_KEY = ctx.secrets.stripeSecretKey;
-    stripe(STRIPE_SECRET_KEY).customers.createSource(
-        req.body.customerid, {
-            source: req.body.stripeToken,
-            metadata: req.body.metadata
-        },
-        (err, card) => {
-            return res.json(card);
-        });
+//card
+s({
+    m: "post",
+    r: "customers",
+    f: "createSource",
+    a: q => (q.body.customerid, {
+        source: q.body.stripeToken,
+        metadata: q.body.metadata
+    })
 });
 
-app.get('/cardretrieve', (req, res) => {
-    var ctx = req.webtaskContext;
-    var STRIPE_SECRET_KEY = ctx.secrets.stripeSecretKey;
-    stripe(STRIPE_SECRET_KEY).customers.retrieveCard(
-        req.query.customerid,
-        req.query.cardid,
-        (err, card) => {
-            return res.json(card);
-        });
+s({
+    m: "get",
+    r: "customers",
+    f: "retrieveCard",
+    a: q => (q.query.customerid,
+        q.query.cardid)
 });
 
-app.post('/cardupdate', (req, res) => {
-    var ctx = req.webtaskContext;
-    var STRIPE_SECRET_KEY = ctx.secrets.stripeSecretKey;
-    stripe(STRIPE_SECRET_KEY).customers.retrieveCard(
-        req.body.customerid,
-        req.body.cardid, {
-            source: req.body.stripeToken
-        },
-        (err, card) => {
-            return res.json(card);
-        });
+s({
+    m: "post",
+    r: "customers",
+    f: "updateCard",
+    a: q => (q.query.customerid,
+        q.query.cardid, {
+            address_city: q.body.address_city,
+            address_country: q.body.address_country,
+            address_line1: q.body.address_line1,
+            address_line2: q.body.address_line2,
+            address_state: q.body.address_state,
+            address_zip: q.body.address_zip,
+            exp_month: q.body.exp_month,
+            exp_year: q.body.exp_year,
+            metadata: q.body.metadata,
+            name: q.body.name
+        })
 });
 
-app.post('/carddelete', (req, res) => {
-    var ctx = req.webtaskContext;
-    var STRIPE_SECRET_KEY = ctx.secrets.stripeSecretKey;
-    stripe(STRIPE_SECRET_KEY).customers.deleteCard(
-        req.body.customerid,
-        req.body.cardid,
-        (err, card) => {
-            return res.json(card);
-        });
+s({
+    m: "post",
+    r: "customers",
+    f: "deleteCard",
+    a: q => (q.query.customerid,
+        q.query.cardid)
 });
 
-//subscriptions
-app.post('/subscriptioncreate', (req, res) => {
-    var ctx = req.webtaskContext;
-    var STRIPE_SECRET_KEY = ctx.secrets.stripeSecretKey;
-    stripe(STRIPE_SECRET_KEY).subscriptions.create({
-        customer: req.body.customer, //required
-        plan: req.body.plan,
-	application_fee_percent: req.body.application_fee_percent,
-        coupon: req.body.coupon,
-        items: req.body.items,
-        metadata: req.body.metadata,
-        plan: req.body.plan,
-        prorate: req.body.prorate,
-        quantity: req.body.quantity,
-        source: req.body.source,
-        trial_end: req.body.trial_end,
-        trial_period_days: req.body.trial_period_days 
-    }, (err, subscription) => {
-        return res.json(subscription);
-    });
-});
-
-app.get('/subscriptionretrieve', (req, res) => {
-    var ctx = req.webtaskContext;
-    var STRIPE_SECRET_KEY = ctx.secrets.stripeSecretKey;
-    stripe(STRIPE_SECRET_KEY).subscriptions.retrieve(
-        req.query.subscriptionid,
-        (err, subscription) => {
-            return res.json(subscription);
-        });
-});
-
-app.post('/subscriptionupdate', (req, res) => {
-    var ctx = req.webtaskContext;
-    var STRIPE_SECRET_KEY = ctx.secrets.stripeSecretKey;
-    stripe(STRIPE_SECRET_KEY).subscriptions.update(
-        req.body.subscriptionid, {
-            application_fee_percent: req.body.application_fee_percent,
-            coupon: req.body.coupon,
-            items: req.body.items,
-            metadata: req.body.metadata,
-            plan: req.body.plan,
-            prorate: req.body.prorate,
-            quantity: req.body.quantity,
-            source: req.body.source,
-            trial_end: req.body.trial_end,
-            trial_period_days: req.body.trial_period_days
-        }, (err, subscription) => {
-            return res.json(subscription);
-        });
-});
-
-app.post('/subscriptioncancel', (req, res) => {
-    var ctx = req.webtaskContext;
-    var STRIPE_SECRET_KEY = ctx.secrets.stripeSecretKey;
-    stripe(STRIPE_SECRET_KEY).subscriptions.del(
-        req.body.subscriptionid,
-        (err, subscription) => {
-            return res.json(subscription);
-        });
-});
-
-//charge
-app.post('/chargecreate', (req, res) => {
-    var ctx = req.webtaskContext;
-    var STRIPE_SECRET_KEY = ctx.secrets.stripeSecretKey;
-    stripe(STRIPE_SECRET_KEY).charges.create({
-        amount: req.body.amount,
-        currency: req.body.currency,
-        application_fee: req.body.application_fee,
-        description: req.body.description,
-        destination: req.body.destination,
-        transfer_group: req.body.transfer_group,
-        on_behalf_of: req.body.on_behalf_of,
-        metadata: req.body.metadata,
-        receipt_email: req.body.receipt_email,
-        customer: req.body.customer,
-        source: req.body.stripeToken,
-        statement_descriptor: req.body.statement_descriptor
-    }, (err, charge) => {
-        return res.json(charge);
-    });
-});
-
-app.get('/chargeretrieve', (req, res) => {
-    var ctx = req.webtaskContext;
-    var STRIPE_SECRET_KEY = ctx.secrets.stripeSecretKey;
-    stripe(STRIPE_SECRET_KEY).charges.retrieve(
-        req.query.chargeid,
-        (err, charge) => {
-            return res.json(charge);
-        });
-});
-
-app.post('/chargeupdate', (req, res) => {
-    var ctx = req.webtaskContext;
-    var STRIPE_SECRET_KEY = ctx.secrets.stripeSecretKey;
-    stripe(STRIPE_SECRET_KEY).charges.update(
-        req.body.chargeid, {
-            amount: req.body.amount,
-            currency: req.body.currency,
-            application_fee: req.body.application_fee,
-            description: req.body.description,
-            destination: req.body.destination,
-            transfer_group: req.body.transfer_group,
-            on_behalf_of: req.body.on_behalf_of,
-            metadata: req.body.metadata,
-            receipt_email: req.body.receipt_email,
-            customer: req.body.customer,
-            source: req.body.stripeToken,
-            statement_descriptor: req.body.statement_descriptor
-        }, (err, charge) => {
-            return res.json(charge);
-        });
+s({
+    m: "get",
+    r: "customers",
+    f: "listCards",
+    a: q => (
+        q.query.customer, {
+            ending_before: q.query.ending_before,
+            limit: q.query.limit,
+            starting_after: q.query.starting_after
+        })
 });
 
 
-app.get('/chargelist', (req, res) => {
-    var ctx = req.webtaskContext;
-    var STRIPE_SECRET_KEY = ctx.secrets.stripeSecretKey;
-    stripe(STRIPE_SECRET_KEY).charges.list({
-            created: req.query.created,
-            customer: req.query.customer,
-            ending_before: req.query.ending_before,
-            limit: req.query.limit,
-            source: req.query.stripeToken,
-            starting_after: req.query.starting_after,
-            transfer_group: req.query.transfer_group
-        },
-        (err, charge) => {
-            return res.json(charge);
-        });
+//subscription
+s({
+    m: "post",
+    r: "subscriptions",
+    f: "create",
+    a: q => ({
+        customer: q.body.customer, //required
+        plan: q.body.plan,
+        application_fee_percent: q.body.application_fee_percent,
+        coupon: q.body.coupon,
+        items: q.body.items,
+        metadata: q.body.metadata,
+        plan: q.body.plan,
+        prorate: q.body.prorate,
+        quantity: q.body.quantity,
+        source: q.body.source,
+        trial_end: q.body.trial_end,
+        trial_period_days: q.body.trial_period_days
+    })
+});
+
+s({
+    m: "get",
+    r: "subscriptions",
+    f: "retrieve",
+    a: q => (q.query.subscriptionid)
+});
+
+s({
+    m: "post",
+    r: "subscriptions",
+    f: "update",
+    a: q => (q.body.subscriptionid, {
+        plan: q.body.plan,
+        application_fee_percent: q.body.application_fee_percent,
+        coupon: q.body.coupon,
+        items: q.body.items,
+        metadata: q.body.metadata,
+        plan: q.body.plan,
+        prorate: q.body.prorate,
+        quantity: q.body.quantity,
+        source: q.body.source,
+        trial_end: q.body.trial_end,
+        trial_period_days: q.body.trial_period_days
+    })
+});
+
+s({
+    m: "post",
+    r: "subscriptions",
+    f: "del",
+    a: q => (q.query.subscriptionid)
+});
+
+s({
+    m: "get",
+    r: "subscriptions",
+    f: "list",
+    a: q => ({
+        customer: q.query.customer,
+        ending_before: q.query.ending_before,
+        limit: q.query.limit,
+        starting_after: q.query.starting_after,
+        plan: q.query.plan,
+        status: q.query.status
+    })
 });
 
 module.exports = fromExpress(app);
