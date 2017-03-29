@@ -12,7 +12,7 @@ Node application to process [Stripe API](https://stripe.com/docs/api), also work
 * Balance (MSIH 20170328)
 * Charge (MSIH 20170328)
 * Customers (MSIH 20170328)
-* Disputes
+* Disputes (MSIH 20170328)
 * Events
 * File Uploads
 * Refunds
