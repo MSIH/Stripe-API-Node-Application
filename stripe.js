@@ -12,7 +12,7 @@ app.use(bodyParser.urlencoded({
 app.use(bodyParser.json());
 
 // Resources as of 20170328
-//Balance
+//Balance - 20170328
 //Charge - 20170328
 //Customers - 20170328
 //Disputes
@@ -64,6 +64,128 @@ function s(data) {
         });
     });
 }
+
+//Balance
+s({
+    m: "get",
+    r: "balance",
+    f: "retrieve",
+    a: q => ({})
+});
+
+s({
+    m: "get",
+    r: "balance",
+    f: "retrieveTransaction",
+    a: q => (q.query.transactionid)
+});
+
+s({
+    m: "get",
+    r: "balance",
+    f: "listTransactions",
+    a: q => (q.body.customerid, {
+        available_on: q.body.available_on,
+        created: q.body.created,
+        currency: q.body.currency,
+        ending_before: q.body.ending_before,
+        limit: q.body.limit,
+        source: q.body.source,
+        starting_after: q.body.starting_after,
+        transfer: q.body.transfer,
+        type: q.body.type
+    })
+});
+
+s({
+    m: "post",
+    r: "customers",
+    f: "del",
+    a: q => (q.query.customerid)
+});
+
+s({
+    m: "get",
+    r: "customers",
+    f: "list",
+    a: q => ({
+        created: q.query.created,
+        ending_before: q.query.ending_before,
+        limit: q.query.limit,
+        starting_after: q.query.starting_after
+    })
+});
+
+//charge
+s({
+    m: "post",
+    r: "charges",
+    f: "create",
+    a: q => ({
+        amount: q.body.amount,
+        currency: q.body.currency,
+        application_fee: q.body.application_fee,
+        capture: q.body.capture,
+        description: q.body.description,
+        transfer_group: q.body.transfer_group,
+        on_behalf_of: q.body.on_behalf_of,
+        metadata: q.body.metadata,
+        receipt_email: q.body.receipt_email,
+        shipping: q.body.shipping,
+        customer: q.body.customer,
+        source: q.body.source,
+        statement_descriptor: q.body.statement_descriptor
+    })
+});
+
+s({
+    m: "get",
+    r: "charges",
+    f: "retrieve",
+    a: q => (q.query.chargeid)
+});
+
+s({
+    m: "post",
+    r: "charges",
+    f: "update",
+    a: q => (q.body.chargeid, {
+        description: q.body.description,
+        metadata: q.body.metadata,
+        receipt_email: q.body.receipt_email,
+        shipping: q.body.shipping,
+        fraud_details: q.body.fraud_details
+    })
+});
+
+s({
+    m: "post",
+    r: "charges",
+    f: "capture",
+    a: q => (q.body.chargeid, {
+        capture: q.body.capture,
+        application_fee: q.body.application_fee,
+        receipt_email: q.body.receipt_email,
+        statement_descriptor: q.body.statement_descriptor
+    })
+});
+
+
+s({
+    m: "get",
+    r: "charges",
+    f: "list",
+    a: q => ({
+        created: q.query.created,
+        ending_before: q.query.ending_before,
+        limit: q.query.limit,
+        customer: q.query.customer,
+        source: q.query.source,
+        starting_after: q.query.starting_after,
+        transfer_group: q.query.transfer_group
+    })
+});
+
 
 //customers
 s({
