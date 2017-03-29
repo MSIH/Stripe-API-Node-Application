@@ -66,6 +66,7 @@ function s(data) {
 }
 
 //Balance
+
 s({
     m: "get",
     r: "balance",
@@ -115,6 +116,7 @@ s({
         starting_after: q.query.starting_after
     })
 });
+}
 
 //charge
 s({
@@ -244,6 +246,22 @@ s({
     })
 });
 
+//Disputes
+//Events
+//File Uploads
+//Refunds
+//Tokens
+//Transfers
+//Transfer Reverals
+//Account
+//Application Fee Refunds
+//Application Fees
+//Receipts
+//Country Specs
+//External Accounts
+//Alipay
+//Bank
+
 //card
 s({
     m: "post",
@@ -302,6 +320,17 @@ s({
         })
 });
 
+//Sources
+//Orders
+//Order items
+//Returns
+//Products
+//SKUs
+//Coupons
+//Discounts
+//Invoices
+//Invoice items
+//Plans
 
 //subscription
 s({
@@ -368,5 +397,7 @@ s({
         status: q.query.status
     })
 });
+
+//Subscription items
 
 module.exports = fromExpress(app);
