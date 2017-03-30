@@ -42,4 +42,28 @@ Node application to process [Stripe API](https://stripe.com/docs/api), also work
 * Subscriptions (MSIH 20170328)
 * Subscription items
 
+# Usage
+
+Javascript AJAX
+
+### Create Charge
+```javascript
+$.ajax({
+    type: 'POST',
+    url: 'https://hostname/customer/charge',    
+    data: {
+      amount: 2000,
+      currency: "usd",
+      source: "tok_1A39MDLH9uqNfEWzeK1CZenj", // obtained with Stripe.js
+      description: "Charge for mason.wilson@example.com"
+    },
+    success: (response) => {
+      console.log(JSON.stringify(response));
+    },
+    error: (error) => {
+      console.log(JSON.stringify(error));
+    }
+  })
+```  
+
 mark down cheat sheet (https://guides.github.com/features/mastering-markdown/)
