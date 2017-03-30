@@ -80,7 +80,7 @@ $.ajax({
       business_vat_id: "123456789",
       coupon: CouponId,
       description: "You just got a frog",
-      email: "some@person.com,
+      email: "some@person.com",
       metadata: {key: "value"}
     },
     success: (response) => {
