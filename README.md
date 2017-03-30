@@ -44,18 +44,44 @@ Node application to process [Stripe API](https://stripe.com/docs/api), also work
 
 # Usage
 
-Javascript AJAX
+## Javascript AJAX
 
-### Create Charge
+### Create Charge (https://stripe.com/docs/api/node#create_charge)
 ```javascript
 $.ajax({
     type: 'POST',
-    url: 'https://hostname/customer/charge',    
+    url: 'https://hostname/charge/create',    
     data: {
-      amount: 2000,
-      currency: "usd",
+        amount: 2000, //required
+        currency: USD, //required
+        capture: true,
+        description: "description",
+        metadata: {key: "value"},
+        receipt_email: "some@person.com",
+        customer: "CustomerId", //one of these 
+        source: "tok_1A39MDLH9uqNfEWzeK1CZenj", // obtained with Stripe.js  //are required
+        statement_descriptor: "You just got a frog"
+    },
+    success: (response) => {
+      console.log(JSON.stringify(response));
+    },
+    error: (error) => {
+      console.log(JSON.stringify(error));
+    }
+  })
+```  
+### Create Customer
+```javascript
+$.ajax({
+    type: 'POST',
+    url: 'https://hostname/customer/create',    
+    data: {
       source: "tok_1A39MDLH9uqNfEWzeK1CZenj", // obtained with Stripe.js
-      description: "Charge for mason.wilson@example.com"
+      business_vat_id: "123456789",
+      coupon: CouponId,
+      description: "You just got a frog"n,
+      email: "some@person.com,
+      metadata: {key: "value"}
     },
     success: (response) => {
       console.log(JSON.stringify(response));
