@@ -79,7 +79,7 @@ $.ajax({
       source: "tok_1A39MDLH9uqNfEWzeK1CZenj", // obtained with Stripe.js
       business_vat_id: "123456789",
       coupon: CouponId,
-      description: "You just got a frog"n,
+      description: "You just got a frog",
       email: "some@person.com,
       metadata: {key: "value"}
     },
